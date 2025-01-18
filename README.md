@@ -1,13 +1,8 @@
-# Nagram
+# Nagram Broken
 
-Nagram is a third-party Telegram client based on [NekoX](https://github.com/NekoX-Dev/NekoX) with some modifications.
+Nagram Broken is a third-party Telegram client based on NekoX some modifications.
 
-- Official Site: <https://nextalone.xyz>
-- Telegram Update Channel: <https://t.me/nagram_channel>
-- Releases: <https://github.com/NextAlone/Nagram/releases>
-- Issues here: <https://github.com/NextAlone/Nagram/issues>
-
-## Additional feature over Nagram
+## Additional feature over Nagram Broken
 
 1. Nice icon (thanks to MaitungTM)
 2. Combine message
@@ -208,11 +203,9 @@ If you experience a *crash*, you also need to click on the version number at the
 
 ## Localization
 
-Nagram is forked from Telegram, thus most locales follows the translations of Telegram for Android, checkout <https://translations.telegram.org/en/android/>.
+Nagram Broken is forked from Telegram, thus most locales follows the translations of Telegram for Android, checkout <https://translations.telegram.org/en/android/>.
 
 Is Nagram not in your language, or the translation is incorrect or incomplete? Get involved in the translations on our [Weblate](https://xtaolabs.crowdin.com/nagram).
-
-[![Crowdin](https://badges.crowdin.net/e/156df3a631d257cc6b57301566d545fb/localized.svg)](https://xtaolabs.crowdin.com/nagram)
 
 ## Thanks
 

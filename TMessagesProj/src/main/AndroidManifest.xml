@@ -135,7 +135,7 @@
         android:restoreAnyVersion="true"
         android:backupAgent=".BackupAgent"
         android:hardwareAccelerated="@bool/useHardwareAcceleration"
-        android:icon="@mipmap/ic_launcher_nagram"
+        android:icon="@mipmap/ic_launcher_nagram_neon"
         android:label="@string/NekoX"
         android:largeHeap="true"
         android:manageSpaceActivity="org.telegram.ui.ExternalActionActivity"

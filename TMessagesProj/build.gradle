@@ -86,7 +86,7 @@ android {
     compileSdkVersion 34
     ndkVersion rootProject.ext.ndkVersion
 
-    defaultConfig.applicationId = "xyz.nextalone.nagram"
+    defaultConfig.applicationId = "xyz.nry2025.nagram"
 
     splits {
 
