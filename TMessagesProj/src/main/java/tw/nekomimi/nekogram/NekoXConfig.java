@@ -41,7 +41,7 @@ public class NekoXConfig {
             1500637449, // Nagram
             1645699549, // Nagram Updates
             2001739482, // Nagram Tips
-            2331027727, // Nagram
+            2331027727L, // Nagram Broken
     };
 
     public static long[] developers = {
