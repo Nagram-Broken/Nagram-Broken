@@ -1180,6 +1180,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int OPTION_COPY_PHOTO = 150;
     private final static int OPTION_COPY_PHOTO_AS_STICKER = 151;
 
+    private boolean isChannelBottomMuteView = false;
+
     private final static int[] allowedNotificationsDuringChatListAnimations = new int[]{
             NotificationCenter.messagesRead,
             NotificationCenter.threadMessagesRead,
@@ -3470,7 +3472,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 return true;
             }
             return chatActivity == null || !(
-                chatActivity.getDialogId() < 0 && chatActivity.getMessagesController().isChatNoForwards(-chatActivity.getDialogId()) ||
+                chatActivity.getDialogId() < 0 && chatActivity.getMessagesController().isChatNoForwardsWithOverride(-chatActivity.getDialogId()) ||
                 selectedView != null && selectedView.getMessageObject() != null && (selectedView.getMessageObject().messageOwner != null && selectedView.getMessageObject().messageOwner.noforwards)
             );
         }
@@ -9923,8 +9925,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             return;
         }
         undoView = new UndoView(getContext(), this, false, themeDelegate);
-        undoView.setAdditionalTranslationY(AndroidUtilities.dp(51));
+        undoView.setAdditionalTranslationY(isBottomOverlayHidden() ? 0 : AndroidUtilities.dp(51));
         contentView.addView(undoView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT, 8, 0, 8, 8));
+    }
+
+    private boolean isBottomOverlayHidden() {
+        // na: DisableChannelMuteButton
+        return currentChat != null && NaConfig.INSTANCE.getDisableChannelMuteButton().Bool() && isChannelBottomMuteView && !currentChat.creator && !ChatObject.canWriteToChat(currentChat);
     }
 
     @Override
@@ -11948,7 +11955,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             bottomMessagesActionContainer.setTranslationY(bottomPanelTranslationYReverse);
         }
         if (undoView != null) {
-            undoView.setAdditionalTranslationY(chatActivityEnterView.getHeightWithTopView() - chatActivityEnterView.getAnimatedTop());
+            undoView.setAdditionalTranslationY(chatActivityEnterView.getHeightWithTopView() - chatActivityEnterView.getAnimatedTop() - (isBottomOverlayHidden() ? AndroidUtilities.dp(51) : 0));
         }
         if (messagesSearchListContainer != null) {
             messagesSearchListContainer.setTranslationY(getHashtagTabsHeight() + contentPanTranslation);
@@ -17811,6 +17818,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else if (child == chatListView || child == chatListThanosEffect) {
                     int contentWidthSpec = View.MeasureSpec.makeMeasureSpec(widthSize, View.MeasureSpec.EXACTLY);
                     int h = heightSize - listViewTopHeight - (inPreviewMode && Build.VERSION.SDK_INT >= 21 ? AndroidUtilities.statusBarHeight : 0) + blurredViewTopOffset + blurredViewBottomOffset;
+                    h += (isBottomOverlayHidden() ? AndroidUtilities.dp(51) : 0);
                     if (keyboardSize > AndroidUtilities.dp(20) && getLayoutParams().height < 0 && !isInsideContainer) {
                         h += keyboardSize;
                     }
@@ -18030,6 +18038,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else if (child == pagedownButton || child == searchUpButton || child == searchDownButton || child == mentiondownButton || child == reactionsMentiondownButton) {
                     if (!inPreviewMode) {
                         childTop -= chatActivityEnterView.getMeasuredHeight();
+                    }
+                    if (isBottomOverlayHidden()) {
+                        childTop += AndroidUtilities.dp(51);
                     }
                 } else if (child == emptyViewContainer) {
                     childTop -= inputFieldHeight / 2 - (actionBar.getVisibility() == VISIBLE ? actionBar.getMeasuredHeight() / 2 : 0);
@@ -18697,9 +18708,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     saveMessageItem.setVisibility(canForward);
                 }
 
-                if (NekoConfig.showBottomActionsWhenSelecting.Bool())
-                    createBottomMessagesActionButtons();
-
+                createBottomMessagesActionButtons();
                 if (prevCantForwardCount == 0 && cantForwardMessagesCount != 0 || prevCantForwardCount != 0 && cantForwardMessagesCount == 0) {
                     forwardButtonAnimation = new AnimatorSet();
                     ArrayList<Animator> animators = new ArrayList<>();
@@ -21584,7 +21593,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             final ArrayList<MessageObject> messages = new ArrayList<>();
             MessageObject conversionMessage = null;
             boolean conversion = false;
-            for (int msg_id : markAsDeletedMessages) {
+            for (int a = 0; a < markAsDeletedMessages.size(); a++) {
+                Integer msg_id = markAsDeletedMessages.get(a);
                 MessageObject msg = messagesDict[0].get(msg_id);
                 if (msg != null) {
                     if (msg.messageOwner != null && msg.messageOwner.video_processing_pending) {
@@ -26450,6 +26460,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         bottomOverlayChatWaitsReply = false;
         bottomOverlayLinks = false;
         boolean forceNoBottom = false;
+        boolean tempMuteView = false;
         if (chatMode == MODE_DEFAULT && getDialogId() != getUserConfig().getClientUserId() && userInfo != null && userInfo.contact_require_premium && !getUserConfig().isPremium()) {
             bottomOverlayLinks = true;
             bottomOverlayChatText.setVisibility(View.GONE);
@@ -26497,6 +26508,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             showBottomOverlayProgress(false, false);
         } else if (currentUser != null && currentUser.id == UserObject.VERIFY) {
+            tempMuteView = true;
             if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                 bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMute), false);
                 bottomOverlayChatText.setEnabled(true);
@@ -26534,17 +26546,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     bottomOverlayChatText.setTextInfo(LocaleController.getString(R.string.ForumReplyToMessagesInTopic));
                     bottomOverlayChatText.setEnabled(false);
                 } else if (!isThreadChat()) {
+                    tempMuteView = true;
                     if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                         bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMute), false);
                         bottomOverlayChatText.setEnabled(true);
                     } else {
                         bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelUnmute), true);
                         bottomOverlayChatText.setEnabled(true);
-                    }
-                    // na: DisableChannelMuteButton
-                    if (NaConfig.INSTANCE.getDisableChannelMuteButton().Bool()) {
-                        bottomOverlayChatText.setText("", false);
-                        bottomOverlayChatText.setEnabled(false);
                     }
                     showBottomOverlayProgress(false, bottomOverlayProgress.getTag() != null);
                 } else if (forumTopic != null && forumTopic.closed) {
@@ -26591,6 +26599,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
             } else if (UserObject.isReplyUser(currentUser)) {
+                tempMuteView = true;
                 if (!getMessagesController().isDialogMuted(dialog_id, getTopicId())) {
                     bottomOverlayChatText.setText(LocaleController.getString(R.string.ChannelMute), false);
                 } else {
@@ -26616,6 +26625,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         }
 
+        isChannelBottomMuteView = tempMuteView;
+
         if (currentChat != null && currentChat.gigagroup && !isReport() && chatMode == 0) {
             bottomOverlayImage.setVisibility(View.VISIBLE);
         } else {
@@ -26625,6 +26636,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (searchContainer != null) {
                 searchContainer.setVisibility(View.INVISIBLE);
             }
+            bottomOverlayChat.setVisibility(View.INVISIBLE);
+            chatActivityEnterView.setFieldFocused(false);
+            chatActivityEnterView.setVisibility(View.INVISIBLE);
+        } else if (isBottomOverlayHidden()) {
             bottomOverlayChat.setVisibility(View.INVISIBLE);
             chatActivityEnterView.setFieldFocused(false);
             chatActivityEnterView.setVisibility(View.INVISIBLE);
@@ -28742,7 +28757,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     height += translationY;
                 }
                 height += contentPanTranslation;
-                return height - AndroidUtilities.dp(1.5f);
+                return height - AndroidUtilities.dp(1.5f) - (isBottomOverlayHidden() ? AndroidUtilities.dp(51) : 0);
             }
 
             @Override
@@ -31777,7 +31792,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             actionModeOtherItem.showSubItem(nkbtn_forward_noquote);
         actionMode.setItemVisibility(delete, View.VISIBLE);
         createBottomMessagesActionButtons();
-        bottomMessagesActionContainer.setVisibility(View.VISIBLE);
+        if (NekoConfig.showBottomActionsWhenSelecting.Bool())
+            bottomMessagesActionContainer.setVisibility(View.VISIBLE);
+        else
+            bottomMessagesActionContainer.setVisibility(View.GONE);
 
         int translationY = chatActivityEnterView.getMeasuredHeight() - AndroidUtilities.dp(51);
         createActionMode();
@@ -31790,11 +31808,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (suggestEmojiPanel != null && suggestEmojiPanel.getVisibility() == View.VISIBLE) {
                 views.add(suggestEmojiPanel);
             }
-            if (NekoConfig.showBottomActionsWhenSelecting.Bool())
-                actionBar.showActionMode(true, bottomMessagesActionContainer, null, views.toArray(new View[0]), new boolean[]{false, true, true}, chatListView, translationY);
-            else
-                actionBar.showActionMode(true, null, null, null, new boolean[]{false, true, true}, chatListView, translationY);
-
+            actionBar.showActionMode(true, bottomMessagesActionContainer, null, views.toArray(new View[0]), new boolean[]{false, true, true}, chatListView, translationY);
             if (getParentActivity() instanceof LaunchActivity) {
                 ((LaunchActivity) getParentActivity()).hideVisibleActionMode();
             }
@@ -31802,15 +31816,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 chatActivityEnterView.getEditField().setAllowDrawCursor(false);
             }
         } else if (bottomOverlayChat.getVisibility() == View.VISIBLE) {
-            if (NekoConfig.showBottomActionsWhenSelecting.Bool())
-                actionBar.showActionMode(true, bottomMessagesActionContainer, null, new View[]{bottomOverlayChat}, new boolean[]{true}, chatListView, translationY);
-            else
-                actionBar.showActionMode(true, null, null, null, new boolean[]{true}, chatListView, translationY);
+            actionBar.showActionMode(true, bottomMessagesActionContainer, null, new View[]{bottomOverlayChat}, new boolean[]{true}, chatListView, translationY);
         } else {
-            if (NekoConfig.showBottomActionsWhenSelecting.Bool())
-                actionBar.showActionMode(true, bottomMessagesActionContainer, null, null, null, chatListView, translationY);
-            else
-                actionBar.showActionMode(true, null, null, null, null, chatListView, translationY);
+            actionBar.showActionMode(true, bottomMessagesActionContainer, null, null, null, chatListView, translationY);
         }
         closeMenu();
         chatLayoutManager.setCanScrollVertically(true);
