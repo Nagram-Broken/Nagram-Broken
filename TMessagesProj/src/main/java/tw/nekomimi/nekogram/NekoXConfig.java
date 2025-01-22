@@ -55,6 +55,7 @@ public class NekoXConfig {
             1068402676, // Kitsune
             6244360706L, // Sevtinge
             7787375235L, // @nry2025
+            6918883849L, // @Gwendolyngo
     };
 
     public static final int TITLE_TYPE_TEXT = 0;
