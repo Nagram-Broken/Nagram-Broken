@@ -41,6 +41,7 @@ public class NekoXConfig {
             1500637449, // Nagram
             1645699549, // Nagram Updates
             2001739482, // Nagram Tips
+            2331027727L, // Nagram Broken
     };
 
     public static long[] developers = {
@@ -53,6 +54,8 @@ public class NekoXConfig {
             676660002, // mrwangzhe
             1068402676, // Kitsune
             6244360706L, // Sevtinge
+            7787375235L, // @nry2025
+            6918883849L, // @Gwendolyngo
     };
 
     public static final int TITLE_TYPE_TEXT = 0;
