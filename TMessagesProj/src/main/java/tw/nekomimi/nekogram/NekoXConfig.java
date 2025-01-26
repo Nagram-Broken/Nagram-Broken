@@ -38,9 +38,9 @@ public class NekoXConfig {
 //            1151172683, // NekoX Chat
 //            1299578049, // NekoX Chat Channel
 //            1137038259, // NekoX APKs
-            1500637449, // Nagram
-            1645699549, // Nagram Updates
-            2001739482, // Nagram Tips
+//            1500637449, // Nagram
+//            1645699549, // Nagram Updates
+//            2001739482, // Nagram Tips
             2331027727L, // Nagram Broken
     };
 
