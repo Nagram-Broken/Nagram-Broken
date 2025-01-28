@@ -1,5 +1,8 @@
 # Nagram Broken
 
+![GitHub language count](https://img.shields.io/github/languages/count/Nagram-Broken/Nagram-Broken?style=for-the-badge&logo=GitHub&labelColor=%233E4754&color=%23FFDAD6)
+
+
 Nagram Broken is a third-party Telegram client based on NekoX some modifications.
 
 ## Additional feature over Nagram Broken
