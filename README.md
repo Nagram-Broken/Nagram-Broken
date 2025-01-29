@@ -2,6 +2,8 @@
 
 ![](https://socialify.git.ci/Nagram-Broken/Nagram-Broken/image?custom_description=Third+party+telegram+client&description=1&forks=1&issues=1&language=1&name=1&owner=1&pattern=Signal&pulls=1&stargazers=1&theme=Dark)
 
+</a>
+
 # Nagram Broken
 
 ![GitHub language count](https://img.shields.io/github/languages/count/Nagram-Broken/Nagram-Broken?style=for-the-badge&logo=GitHub&labelColor=%233E4754&color=%23FFDAD6)
