@@ -2,7 +2,7 @@
 
 ![](https://socialify.git.ci/Nagram-Broken/Nagram-Broken/image?custom_description=Third+party+telegram+client&description=1&forks=1&issues=1&language=1&name=1&owner=1&pattern=Signal&pulls=1&stargazers=1&theme=Dark)
 
-</a>
+</div>
 
 # Nagram Broken
 
