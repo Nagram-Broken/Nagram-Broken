@@ -1,5 +1,6 @@
 <div align="center">
 
+![](https://img.shields.io/badge/Download-%239CCBFA?style=for-the-badge&logo=Telegram&logoColor=%233E4852)
 ![](https://socialify.git.ci/Nagram-Broken/Nagram-Broken/image?custom_description=Third+party+telegram+client&description=1&forks=1&issues=1&language=1&name=1&owner=1&pattern=Signal&pulls=1&stargazers=1&theme=Dark)
 
 
