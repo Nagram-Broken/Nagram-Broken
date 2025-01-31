@@ -161,7 +161,7 @@ public class NekoConfig {
     public static ConfigItem disableLinkPreviewByDefault = addConfig("DisableLinkPreviewByDefault", configTypeBool, false);
     public static ConfigItem sendCommentAfterForward = addConfig("SendCommentAfterForward", configTypeBool, true);
 //    public static ConfigItem increaseVoiceMessageQuality = addConfig("IncreaseVoiceMessageQuality", configTypeBool, true);
-    public static ConfigItem disableTrending = addConfig("DisableTrending", configTypeBool, true);
+//    public static ConfigItem disableTrending = addConfig("DisableTrending", configTypeBool, true);
     public static ConfigItem dontSendGreetingSticker = addConfig("DontSendGreetingSticker", configTypeBool, false);
     public static ConfigItem hideTimeForSticker = addConfig("HideTimeForSticker", configTypeBool, false);
     public static ConfigItem takeGIFasVideo = addConfig("TakeGIFasVideo", configTypeBool, false);
@@ -451,7 +451,9 @@ public class NekoConfig {
         if (preferences.contains("sendCommentAfterForward"))
             sendCommentAfterForward.setConfigBool(preferences.getBoolean("sendCommentAfterForward", true));
 //        if (preferences.contains("increaseVoiceMessageQuality"))
-//            increaseVoiceMessageQuality.setConfigBool(preferences.getBoolean("increaseVoiceMessageQuality", true));
+//            increaseVoiceMessageQuality.setConfigBool(preferences.getBoolean("increaseVoiceMessageQuality", true));=
+//        if (preferences.contains("disableTrending"))
+//            disableTrending.setConfigBool(preferences.getBoolean("disableTrending", true));v
         if (preferences.contains("dontSendGreetingSticker"))
             dontSendGreetingSticker.setConfigBool(preferences.getBoolean("dontSendGreetingSticker", false));
         if (preferences.contains("hideTimeForSticker"))

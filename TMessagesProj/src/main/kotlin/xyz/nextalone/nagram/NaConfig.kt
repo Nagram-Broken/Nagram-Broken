@@ -8,6 +8,7 @@ import org.telegram.messenger.ApplicationLoader
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.R
 import tw.nekomimi.nekogram.config.ConfigItem
+import tw.nekomimi.nekogram.config.ConfigItemKeyLinked
 import java.io.ByteArrayInputStream
 import java.io.ObjectInputStream
 
@@ -415,6 +416,34 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0
         )
+    val defaultDeleteMenuBanUsers =
+        addConfig(
+            "DeleteBanUsers",
+            defaultDeleteMenu,
+            3,
+            false
+        )
+    val defaultDeleteMenReportSpam =
+        addConfig(
+            "DeleteReportSpam",
+            defaultDeleteMenu,
+            2,
+            false
+        )
+    val defaultDeleteMenuDeleteAll =
+        addConfig(
+            "DeleteAll",
+            defaultDeleteMenu,
+            1,
+            false
+        )
+    val defaultDeleteMenuDoActionsInCommonGroups =
+        addConfig(
+            "DoActionsInCommonGroups",
+            defaultDeleteMenu,
+            0,
+            false
+        )
     val disableSuggestionView =
         addConfig(
             "DisableSuggestionView",
@@ -675,78 +704,96 @@ object NaConfig {
             "EnhancedVideoBitrate",
             ConfigItem.configTypeBool,
             false
+        )=
+    val disableTrendingFlags =
+        addConfig(
+            "DisableTrendingFlags",
+            ConfigItem.configTypeInt,
+            0
         )
     val disableStarsSubscription =
         addConfig(
             "DisableStarsSubscription",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            0,
+            falsev
         )
     val disablePremiumExpiring =
         addConfig(
             "DisablePremiumExpiring",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            1,
+            falsev
         )
     val disablePremiumUpgrade =
         addConfig(
             "DisablePremiumUpgrade",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            2,
+            false
         )
     val disablePremiumChristmas =
         addConfig(
             "DisablePremiumChristmas",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            3,
+            false
         )
     val disableBirthdayContact =
         addConfig(
             "DisableBirthdayContact",
-            ConfigItem.configTypeBool,
+            disableTrendingFlags,
+            4,
             false
         )
     val disablePremiumRestore =
         addConfig(
             "DisablePremiumRestore",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            5,
+            false
         )
     val disableFeatuerdEmojis =
         addConfig(
             "DisableFeatuerdEmojis",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            6,
+            false
         )
     val disableFeaturedStickers =
         addConfig(
             "DisableFeaturedStickers",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            7,
+            false
         )
     val disableFeaturedGifs =
         addConfig(
             "DisableFeaturedGifs",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            8,
+            false
         )
     val disablePremiumFavoriteEmojiTags =
         addConfig(
             "DisablePremiumFavoriteEmojiTags",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            9,
+            false
         )
     val disableFavoriteSearchEmojiTags =
         addConfig(
             "DisableFavoriteSearchEmojiTags",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            10,
+            false
         )
     val disableNonPremiumChannelChatShow =
         addConfig(
             "DisableNonPremiumChannelChatShow",
-            ConfigItem.configTypeBool,
-            true
+            disableTrendingFlags,
+            11,
+            false
         )
 
     private fun addConfig(
@@ -759,6 +806,25 @@ object NaConfig {
                 k,
                 t,
                 d
+            )
+        configs.add(
+            a
+        )
+        return a
+    }
+
+    private fun addConfig(
+        k: String,
+        t: ConfigItem,
+        d: Int,
+        e: Any?
+    ): ConfigItem {
+        val a =
+            ConfigItemKeyLinked(
+                k,
+                t,
+                d,
+                e,
             )
         configs.add(
             a
@@ -864,6 +930,10 @@ object NaConfig {
                                 HashMap<Int, Int>()
                         }
                     }
+                }
+                if (o.type == ConfigItem.configTypeBoolLinkInt) {
+                    o as ConfigItemKeyLinked
+                    o.changedFromKeyLinked(preferences.getInt(o.keyLinked.key, 0))
                 }
             }
             configLoaded =
